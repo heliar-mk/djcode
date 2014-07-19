@@ -2,21 +2,33 @@
 <head>
     <title>Contact</title>
 </head>
+<style type = 'text/css'>
+    ul.errorlist {
+            margin: 0;
+            padding: 0'
+    }
+    .errorlist li {
+            background-color: red;
+            color: white;
+            display: block;
+            font-size: 10px;
+            margin: 0 0 3px;
+            padding: 4px 5px;
+    }
+</style>
 <body>
     <h1>Contact us</h1>
 
-    {% if error %}
-        <ul>
-                {% for i in error %}
-                <li>{{i}}</li>
-                {% endfor %}
-        </ul>
+    {% if form.errors %}
+        <p style = 'color:red;'>
+            Please correct the error{{ form.errors|pluralize }} below.
+        </p>
     {% endif %}
 
-    <form action='/contact/' method = 'post'>
-            <p>Subject:<input type = 'text' name = 'subject' value = '{{ subject }}'></p>
-            <p>Your email(optional):<input type = 'text' name = 'email' value = '{{ email }}'></p>
-            <p>Mesages:<textarea name = 'message' rows='10' cols ='50'>{{ message }}</textarea></p>
+    <form action='' method = 'post'>
+        <table>
+                {{ form.as_table }}
+        </table>
         <input type ='submit' value = 'Submit'>
     </form>
 </body>

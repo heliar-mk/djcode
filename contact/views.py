@@ -1,31 +1,23 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.core.mail import send_mail
-
+from contact.form import ContactForm
 
 def contact(request):
-    error = []
     if request.method == 'POST':
-        if not request.POST.get('subject', ''):
-            error.append('Enter a subject:')
-        if not request.POST.get('message', ''):
-            error.append('Enter a message:')
-        if request.POST.get('email') and '@' not in request.POST['email']:
-            error.append('Enter a valid e-mail address:')
-        if not error:
-            send_mail(
-                     request.POST['subject'],
-                     request.POST['message'],
-                     request.POST.get('email', 'noreply@example.com'),
-                     ['siteowner@example.com'],
-                     )
-            return HttpResponseRedirect('/contact/thanks/')
-    return render_to_response('contact_form.html', {
-            'error': error,
-            'subject': request.POST.get('subject', ''),
-            'email': request.POST.get('email', ''),
-            'message': request.POST.get('message', '')}
-            )
+            form = ContactForm(request.POST)
+            if form.is_valid():
+                    cd = form.cleaned_data
+                    send_mail(
+                        cd['subject'],
+                        cd['message'],
+                        cd.get('email', 'noreply@example.com'),
+                        ['siteowner@example.com'],
+                    )
+                    return HttpResponseRedirect('/contact/thanks/')
+    else:
+            form = ContactForm(initial = {'subject': 'I love your site'})
+    return render_to_response('contact_form.html', {'form': form})
 
 
 def thanks(request):
