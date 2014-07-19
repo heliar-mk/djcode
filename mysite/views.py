@@ -25,19 +25,18 @@ def hours_ahead(request, offset):
 def display_meta(request):
         values = request.META.items()
         values.sort()
-        path = request.get_full_path()
-        is_secure = request.is_secure()
-        return render_to_response('display_meta.html', {'values' :values,'path':path, 'is_secure':is_secure})
-
-
-def search_form(request):
-    return render_to_response('search_form.html')
+        return render_to_response('display_meta.html', {'values' :values})
 
 
 def search(request):
-    if 'q' in request.GET and request.Get['q']:
+    error = [] 
+    if 'q' in request.GET:
         q = request.GET['q']
-        books = Book.objects.filter(title_icontains=q)
-        return render_to_response('search_results.html',{'books':books, 'query':q})
-    else:
-        return HttpResponse('please submit a search term')
+        if not q:
+            error.append('Please submit a search term.')
+        elif len(q)>20:
+            error.append('Please submit a search term less than 20 characters.')
+        else:
+            books = Book.objects.filter(title__icontains=q)
+            return render_to_response('search_result.html',{'books':books, 'query':q})
+    return render_to_response('search_form.html', {'error':error})
