@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}The request_META data{% endblock %}
+
+{% block content %}
+<h3>The path is {{path}}.</h3>
+{% if is_secure %}
+<h2>This connection is secured.</h2>
+{% else %}
+<h2>This connection is not secured.</h2>
+{% endif %}
+<table>
+{% for k,v in values %}
+    <tr><td>{{k}}</td><td>{{v}}</td></tr>
+{% endfor %}
+</table>
+{% endblock %}
